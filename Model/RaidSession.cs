@@ -18,7 +18,7 @@ public sealed class RaidSession
     /// <summary>Last time a pull was added or resolved, used to decide whether to resume.</summary>
     public DateTime LastActiveUtc { get; set; } = DateTime.UtcNow;
 
-    /// <summary>Resolved pulls that survived the short-pull filter, in order.</summary>
+    /// <summary>All resolved pulls, including brief attempts. Committed pulls have Discarded = false.</summary>
     public List<PullEntry> Pulls { get; set; } = new();
 
     /// <summary>How many short resets were dropped this run.</summary>
@@ -32,9 +32,16 @@ public sealed class RaidSession
     public int AttemptCounter { get; set; }
 
     [JsonIgnore]
-    public bool Cleared => Pulls.Any(p => p.Outcome == PullOutcome.Clear);
+    public bool Cleared => Pulls.Any(p => !p.Discarded && p.Outcome == PullOutcome.Clear);
 
-    /// <summary>Best (lowest) boss HP fraction reached across all committed pulls.</summary>
+    /// <summary>Best (lowest) boss HP fraction reached across committed pulls (brief attempts excluded).</summary>
     [JsonIgnore]
-    public float BestHpFraction => Pulls.Count == 0 ? 1f : Pulls.Min(p => p.LowestHpFraction);
+    public float BestHpFraction
+    {
+        get
+        {
+            var committed = Pulls.Where(p => !p.Discarded).ToList();
+            return committed.Count == 0 ? 1f : committed.Min(p => p.LowestHpFraction);
+        }
+    }
 }

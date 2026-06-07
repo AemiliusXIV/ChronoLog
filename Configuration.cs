@@ -58,11 +58,13 @@ public class Configuration : IPluginConfiguration
 
     public bool DiscardShortPulls { get; set; } = true;
 
-    /// <summary>Wipes shorter than this (from combat start) are dropped from the lists.</summary>
-    public int ShortPullThresholdSeconds { get; set; } = 20;
-
-    /// <summary>Whether a discarded short reset still increments the attempt counter.</summary>
-    public bool DiscardedCountsAsAttempt { get; set; } = false;
+    /// <summary>
+    /// Wipes shorter than this (from combat start) are shown as brief attempts rather than
+    /// full pulls. They appear dimmed in the session list and are excluded from the text
+    /// export, but always increment the attempt counter so numbering stays in sync with FFLogs.
+    /// Default 15 s matches the empirical FFLogs trash-fight threshold.
+    /// </summary>
+    public int ShortPullThresholdSeconds { get; set; } = 15;
 
     // â”€â”€ Text export â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     /// <summary>

@@ -1,6 +1,8 @@
 ﻿// Copyright (C) 2026 AemiliusXIV -- https://github.com/AemiliusXIV/ChronoLog
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
@@ -54,10 +56,12 @@ public sealed class MainWindow : Window, IDisposable
         ImGui.SameLine();
         ImGui.TextDisabled(live ? "(live)" : "(stored)");
 
+        var committedCount = session.Pulls.Count(p => !p.Discarded);
+        var briefCount = session.Pulls.Count(p => p.Discarded);
         var bestRemaining = (int)Math.Round(session.BestHpFraction * 100);
         var bestText = session.Cleared ? "cleared" : $"best pull: boss to {bestRemaining}%";
-        var discardNote = session.DiscardedCount > 0 ? $"  ·  {session.DiscardedCount} short reset(s) dropped" : string.Empty;
-        ImGui.TextDisabled($"{session.Pulls.Count} pull(s) registered  ·  {bestText}{discardNote}");
+        var briefNote = briefCount > 0 ? $"  ·  {briefCount} brief attempt(s)" : string.Empty;
+        ImGui.TextDisabled($"{committedCount} pull(s) registered  ·  {bestText}{briefNote}");
 
         DrawTable(session);
 
@@ -73,21 +77,22 @@ public sealed class MainWindow : Window, IDisposable
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip("Copy all pulls from this session.");
 
-        var newPullCount = session.Id == lastCopySessionId
-            ? session.Pulls.Count - lastCopyPullCount
-            : 0;
-        if (newPullCount > 0)
+        // New committed (non-brief) pulls since the last copy.
+        var newPulls = session.Id == lastCopySessionId
+            ? session.Pulls.Skip(lastCopyPullCount).Where(p => !p.Discarded).ToList()
+            : new List<PullEntry>();
+        if (newPulls.Count > 0)
         {
             ImGui.SameLine();
-            var rangeLabel = newPullCount == 1
-                ? $"Copy new (pull {lastCopyPullCount + 1})"
-                : $"Copy new (pulls {lastCopyPullCount + 1}-{session.Pulls.Count})";
+            var rangeLabel = newPulls.Count == 1
+                ? $"Copy new (pull {newPulls[0].Attempt})"
+                : $"Copy new (pulls {newPulls[0].Attempt}-{newPulls[^1].Attempt})";
             if (ImGui.Button(rangeLabel))
             {
                 var block = TextExporter.Build(session, Config.TemplateFormat, Config.EffectiveTimestampOffset(), Config.PhaseTimestampsEnabled, Config.PhaseTimestampOffsetSeconds, startIndex: lastCopyPullCount);
                 ImGui.SetClipboardText(block);
                 lastCopyPullCount = session.Pulls.Count;
-                status = $"Copied pulls {lastCopyPullCount - newPullCount + 1}-{lastCopyPullCount}.";
+                status = $"Copied {newPulls.Count} new pull(s).";
             }
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip("Copy only the pulls added since the last copy.\nPaste this at the end of your existing description block.");
@@ -203,7 +208,7 @@ public sealed class MainWindow : Window, IDisposable
             var popupOpen = true;
             if (ImGui.BeginPopupModal(DeletePopupId, ref popupOpen, ImGuiWindowFlags.AlwaysAutoResize))
             {
-                ImGui.TextUnformatted($"Delete \"{current.FightName}\" ({current.Pulls.Count} pull(s))?");
+                ImGui.TextUnformatted($"Delete \"{current.FightName}\" ({current.Pulls.Count(p => !p.Discarded)} pull(s))?");
                 ImGui.TextDisabled("This cannot be undone.");
                 ImGui.Spacing();
                 if (ImGui.Button("Delete", new Vector2(80f, 0f)))
@@ -223,7 +228,7 @@ public sealed class MainWindow : Window, IDisposable
     private static string SessionLabel(RaidSession s)
     {
         var when = s.StartedUtc.ToLocalTime().ToString("MM-dd HH:mm");
-        var tag = s.Cleared ? "cleared" : $"{s.Pulls.Count}p";
+        var tag = s.Cleared ? "cleared" : $"{s.Pulls.Count(p => !p.Discarded)}p";
         return $"{s.FightName}  ({when}, {tag})";
     }
 
@@ -244,6 +249,20 @@ public sealed class MainWindow : Window, IDisposable
         foreach (var p in session.Pulls)
         {
             ImGui.TableNextRow();
+
+            if (p.Discarded)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(0.45f, 0.45f, 0.45f, 1f));
+                ImGui.TableNextColumn(); ImGui.TextUnformatted(p.Attempt.ToString());
+                ImGui.TableNextColumn(); ImGui.TextUnformatted("Brief attempt");
+                ImGui.TableNextColumn(); ImGui.TextUnformatted("-");
+                ImGui.TableNextColumn(); ImGui.TextUnformatted("-");
+                ImGui.TableNextColumn(); ImGui.TextUnformatted(FormatDuration(p.Duration));
+                ImGui.TableNextColumn(); ImGui.TextUnformatted("-");
+                ImGui.PopStyleColor();
+                continue;
+            }
+
             ImGui.TableNextColumn();
             if (p.IsMarked)
             {

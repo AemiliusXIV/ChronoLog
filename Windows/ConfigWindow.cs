@@ -75,27 +75,20 @@ public sealed class ConfigWindow : Window, IDisposable
             Config.Save();
         }
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Drops wipes shorter than the threshold (measured from combat start) so a quick reset doesn't clutter the list.\nLive OBS chapter markers are not removed; only the text/YouTube lists skip them.");
+            ImGui.SetTooltip("Wipes shorter than the threshold (from combat start) are shown as dimmed 'Brief attempt' rows\nand excluded from the text export. The attempt counter always increments for them so\nyour pull numbering stays in sync with FFLogs.");
 
         if (Config.DiscardShortPulls)
         {
             ImGui.Indent();
-
             var threshold = Config.ShortPullThresholdSeconds;
             ImGui.SetNextItemWidth(120);
-            if (ImGui.InputInt("Threshold (seconds)", ref threshold))
+            if (ImGui.InputInt("Threshold (seconds)##shortpull", ref threshold))
             {
                 Config.ShortPullThresholdSeconds = Math.Clamp(threshold, 1, 600);
                 Config.Save();
             }
-
-            var counts = Config.DiscardedCountsAsAttempt;
-            if (ImGui.Checkbox("Discarded resets still count as an attempt", ref counts))
-            {
-                Config.DiscardedCountsAsAttempt = counts;
-                Config.Save();
-            }
-
+            if (ImGui.IsItemHovered())
+                ImGui.SetTooltip("Default 15 s matches the empirical FFLogs threshold for brief attempts.");
             ImGui.Unindent();
         }
 

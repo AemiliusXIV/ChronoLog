@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using ChronoLog.Model;
 
@@ -45,11 +46,12 @@ public static class TextExporter
         if (session.Pulls.Count == 0)
             return string.Empty;
 
-        startIndex = Math.Clamp(startIndex, 0, session.Pulls.Count);
-        if (startIndex >= session.Pulls.Count)
+        // Brief attempts are stored for display but excluded from the export.
+        var first = session.Pulls.FirstOrDefault(p => !p.Discarded);
+        if (first == null)
             return string.Empty;
 
-        var first = session.Pulls[0];
+        startIndex = Math.Clamp(startIndex, 0, session.Pulls.Count);
         var sb = new StringBuilder();
 
         // "0:00 Stream start" anchors YouTube chapters for a full export. Skip it for
@@ -60,6 +62,7 @@ public static class TextExporter
         for (var i = startIndex; i < session.Pulls.Count; i++)
         {
             var pull = session.Pulls[i];
+            if (pull.Discarded) continue;
             if (phaseEnabled && pull.PhaseLog.Count > 1)
                 AppendPhaseLines(sb, pull, first, phaseOffsetSeconds);
             else

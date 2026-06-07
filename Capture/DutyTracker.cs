@@ -247,8 +247,8 @@ public sealed class DutyTracker : IDisposable
         {
             pull.Discarded = true;
             session.DiscardedCount++;
-            if (config.DiscardedCountsAsAttempt)
-                session.AttemptCounter = pull.Attempt;
+            session.AttemptCounter = pull.Attempt; // always count so numbering matches FFLogs
+            session.Pulls.Add(pull);               // store for display as a brief attempt
             PullDiscarded?.Invoke(pull);
         }
         else
@@ -276,7 +276,7 @@ public sealed class DutyTracker : IDisposable
         session = null;
 
         // Don't keep sessions that never saw a pull (entered and left).
-        if (ended.Pulls.Count == 0 && ended.DiscardedCount == 0)
+        if (ended.Pulls.Count == 0)
             store.Remove(ended);
         else
             store.Save();
