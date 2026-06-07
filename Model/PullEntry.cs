@@ -77,7 +77,7 @@ public sealed class PullEntry
     /// <summary>True when the pull was dropped for being shorter than the discard threshold.</summary>
     public bool Discarded { get; set; }
 
-    /// <summary>Set via /clog mark or the mark overlay button. Toggles off on a second press.</summary>
+    /// <summary>Set via /chrono mark or the mark overlay button. Toggles off on a second press.</summary>
     public bool IsMarked { get; set; } = false;
 
     /// <summary>

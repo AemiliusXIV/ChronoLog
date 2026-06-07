@@ -37,7 +37,7 @@ ChronoLog is part of the [AemiliusXIV plugin repository](https://github.com/Aemi
 
 ## Setup
 
-1. Once installed, open settings with `/clog cfg`. `/clog` opens the session window.
+1. Once installed, open settings with `/chrono cfg`. `/chrono` opens the session window.
 2. For OBS: see [docs/obs-setup.md](docs/obs-setup.md) for a step-by-step walkthrough.
 3. For YouTube: this needs your own Google Cloud OAuth client. See
    [docs/youtube-setup.md](docs/youtube-setup.md). Read the warning below first.

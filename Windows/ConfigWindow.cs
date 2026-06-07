@@ -459,7 +459,7 @@ public sealed class ConfigWindow : Window, IDisposable
     {
         DrawSectionHeader("Mark");
 
-        ImGui.TextDisabled("Use /clog mark (or the overlay button) to flag a pull.");
+        ImGui.TextDisabled("Use /chrono mark (or the overlay button) to flag a pull.");
         ImGui.Spacing();
 
         var showOverlay = Config.ShowMarkOverlay;

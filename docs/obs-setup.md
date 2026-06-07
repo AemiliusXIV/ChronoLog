@@ -27,7 +27,7 @@ Click **OK**.
 
 ### 2. Connect ChronoLog
 
-In-game, run `/clog cfg` to open the settings window, then find the **OBS** section.
+In-game, run `/chrono cfg` to open the settings window, then find the **OBS** section.
 
 - **Host**: leave this as `127.0.0.1`. That points to OBS on the same machine. Only change it
   if OBS is running on a different PC on your network.
@@ -49,7 +49,7 @@ That's it. ChronoLog will now drop a chapter marker at the start of each pull.
 Start a recording in OBS, then enter a duty. On the first pull you should see a new chapter entry
 appear in OBS's recording timeline. If nothing appears, check:
 
-- The status line in `/clog cfg` - if it shows an error, re-check the port and password.
+- The status line in `/chrono cfg` - if it shows an error, re-check the port and password.
 - That OBS is actually running and not minimised to tray without the server starting.
 - That no firewall is blocking localhost traffic on port 4455.
 
@@ -70,4 +70,4 @@ when OBS is not on the same machine.
 
 **Reconnection** - if OBS closes or the connection drops mid-session, ChronoLog will attempt to
 reconnect once after a short delay and print the result to your chat log. If the reconnect fails
-you will see a prompt to reconnect manually in `/clog cfg`.
+you will see a prompt to reconnect manually in `/chrono cfg`.

@@ -34,7 +34,7 @@ single-user setup, Testing with weekly re-auth is the simpler path.
 
 ## 4. Connect in the plugin
 
-1. `/clog cfg` > YouTube section.
+1. `/chrono cfg` > YouTube section.
 2. Paste the client id and client secret.
 3. Click Connect, read the warning, continue. A browser opens for the Google sign-in.
 4. Choose when to push: when the duty ends, after every pull, or manual only.

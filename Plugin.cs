@@ -24,7 +24,7 @@ public sealed class Plugin : IDalamudPlugin
 {
     public string Name => "ChronoLog";
 
-    private const string MainCommand = "/clog";
+    private const string MainCommand = "/chrono";
     private const string AliasCommand = "/raidts";
 
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -111,12 +111,12 @@ public sealed class Plugin : IDalamudPlugin
 
         CommandManager.AddHandler(MainCommand, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Open ChronoLog. '/clog cfg' opens settings.",
+            HelpMessage = "Open ChronoLog. '/chrono cfg' opens settings.",
             ShowInHelp = true,
         });
         CommandManager.AddHandler(AliasCommand, new CommandInfo(OnCommand)
         {
-            HelpMessage = "Alias for /clog.",
+            HelpMessage = "Alias for /chrono.",
             ShowInHelp = false,
         });
     }
@@ -231,7 +231,7 @@ public sealed class Plugin : IDalamudPlugin
         switch (Config.StreamRestartBehavior)
         {
             case StreamRestartBehavior.NotifyOnly:
-                ChatGui.Print("[ChronoLog] New OBS stream detected. Old timestamps are from a previous VOD - use Reset session in /clog if you want a clean list.");
+                ChatGui.Print("[ChronoLog] New OBS stream detected. Old timestamps are from a previous VOD - use Reset session in /chrono if you want a clean list.");
                 break;
 
             case StreamRestartBehavior.AutoReset:
@@ -284,7 +284,7 @@ public sealed class Plugin : IDalamudPlugin
             if (Obs.IsConnected)
                 ChatGui.Print("[ChronoLog] OBS reconnected.");
             else
-                ChatGui.Print("[ChronoLog] OBS reconnect failed. Reconnect manually in /clog cfg.");
+                ChatGui.Print("[ChronoLog] OBS reconnect failed. Reconnect manually in /chrono cfg.");
         }
 
         // Reconnect succeeded before the check deadline.
@@ -302,7 +302,7 @@ public sealed class Plugin : IDalamudPlugin
             return;
 
         if (!Obs.IsConnected)
-            ChatGui.Print("[ChronoLog] OBS is not connected - chapter markers will be missed. Connect via /clog cfg.");
+            ChatGui.Print("[ChronoLog] OBS is not connected - chapter markers will be missed. Connect via /chrono cfg.");
         else if (Obs.OutputActive == false)
             ChatGui.Print("[ChronoLog] OBS is connected but not recording or streaming. Start a recording in OBS before you pull.");
     }
