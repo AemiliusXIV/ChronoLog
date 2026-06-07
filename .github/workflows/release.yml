@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x.x'
+      - name: Download Dalamud
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/stg/latest.zip -OutFile latest.zip
+          Expand-Archive -Force latest.zip "$env:AppData\\XIVLauncher\\addon\\Hooks\\dev"
+      - name: Set version from tag
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          $csprojPath = "ChronoLog.csproj"
+          $csproj = Get-Content $csprojPath -Raw
+          $csproj = $csproj -replace '<Version>.*?</Version>', "<Version>$version</Version>"
+          Set-Content $csprojPath $csproj -Encoding UTF8
+          Write-Host "Version set to $version"
+      - name: Build
+        shell: pwsh
+        run: dotnet build ChronoLog.csproj --configuration Release --nologo
+      - name: Verify build output
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "bin/Release/ChronoLog/latest.zip")) {
+            Write-Error "latest.zip not found after build"
+            exit 1
+          }
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}"
+          gh release create $version "bin/Release/ChronoLog/latest.zip" `
+            --repo ${{ github.repository }} `
+            --title "v$version" `
+            --notes "Release $version"
+  update-manifest:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update pluginmaster.json in DalamudPlugins
+        env:
+          GH_TOKEN: ${{ secrets.MANIFEST_PAT }}
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.ref_name }}"
+          CHANGELOG=$(jq -r '.Changelog // ""' ChronoLog.json)
+          API_LEVEL=$(jq '.DalamudApiLevel' ChronoLog.json)
+          RESPONSE=$(gh api repos/AemiliusXIV/DalamudPlugins/contents/pluginmaster.json)
+          SHA=$(echo "$RESPONSE" | jq -r '.sha')
+          CONTENT=$(echo "$RESPONSE" | jq -r '.content' | base64 -d)
+          NEW_CONTENT=$(echo "$CONTENT" | jq \
+            --arg v "$VERSION" \
+            --arg n "ChronoLog" \
+            --arg cl "$CHANGELOG" \
+            --argjson al "$API_LEVEL" \
+            '(.[] | select(.InternalName==$n) | .AssemblyVersion) = $v |
+             (.[] | select(.InternalName==$n) | .Changelog) = $cl |
+             (.[] | select(.InternalName==$n) | .DalamudApiLevel) = $al')
+          ENCODED=$(echo "$NEW_CONTENT" | base64 -w 0)
+          gh api repos/AemiliusXIV/DalamudPlugins/contents/pluginmaster.json \
+            --method PUT \
+            -f message="Sync plugin versions from upstream releases" \
+            -f content="$ENCODED" \
+            -f sha="$SHA" \
+            -f "committer[name]=AemiliusXIV" \
+            -f "committer[email]=mirror.rose2155@eagereverest.com" \
+            -f "author[name]=AemiliusXIV" \
+            -f "author[email]=mirror.rose2155@eagereverest.com"

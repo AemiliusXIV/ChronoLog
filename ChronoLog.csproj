@@ -1,0 +1,34 @@
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+
+  <PropertyGroup>
+    <Version>0.1.0.0</Version>
+    <Description>Detects raid pulls, wipes and clears and turns each into a timestamp: drops OBS chapter markers and builds a paste-ready YouTube-description block. Direct push to a live stream's description is planned for a later release.</Description>
+    <PackageProjectUrl>https://github.com/AemiliusXIV/ChronoLog</PackageProjectUrl>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- YouTube integration is gated to Debug builds pending end-to-end testing -->
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.74.0.4162" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="obs-websocket-dotnet" Version="5.0.1" />
+
+    <!-- Dalamud already ships these in its runtime. Compile against the versions
+         it loads, but don't pack our own copies, or the loader hits a duplicate. -->
+    <PackageReference Include="System.Reactive" Version="6.1.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <!-- Auto-deploy to Dalamud's customPlugins folder after every build -->
+  <Target Name="DeployToCustomPlugins" AfterTargets="Build">
+    <PropertyGroup>
+      <_CustomPluginsDir>$(APPDATA)\XIVLauncher\customPlugins\ChronoLog</_CustomPluginsDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(_CustomPluginsDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(_CustomPluginsDir)" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="$(TargetDir)$(AssemblyName).deps.json" DestinationFolder="$(_CustomPluginsDir)" SkipUnchangedFiles="false" Condition="Exists('$(TargetDir)$(AssemblyName).deps.json')" />
+    <Copy SourceFiles="$(TargetDir)$(AssemblyName).json" DestinationFolder="$(_CustomPluginsDir)" SkipUnchangedFiles="false" Condition="Exists('$(TargetDir)$(AssemblyName).json')" />
+  </Target>
+
+</Project>
