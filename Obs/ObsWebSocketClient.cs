@@ -116,6 +116,14 @@ public sealed class ObsWebSocketClient : IDisposable
             Plugin.Log.Information("OBS connected");
             ConnectionChanged?.Invoke(true);
         };
+        // OBS sends ExitStarted before closing the websocket when it shuts down cleanly.
+        // Treating it the same as a manual disconnect suppresses the auto-reconnect attempt
+        // that would otherwise fire. Crashes skip this event, so reconnect still triggers then.
+        obs.ExitStarted += (_, _) =>
+        {
+            manualDisconnect = true;
+            Plugin.Log.Information("OBS exit detected - skipping reconnect");
+        };
         obs.Disconnected += (_, info) =>
         {
             IsConnected = false;

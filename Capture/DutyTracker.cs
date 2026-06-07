@@ -63,6 +63,12 @@ public sealed class DutyTracker : IDisposable
         Plugin.DutyState.DutyRecommenced += OnDutyRecommenced;
         Plugin.DutyState.DutyCompleted += OnDutyCompleted;
         Plugin.ClientState.TerritoryChanged += OnTerritoryChanged;
+
+        // If the plugin reloads while the player is already inside an instance (e.g., a
+        // hot-swap after a build), DutyStarted won't re-fire. Prime the session now so
+        // the very next pull attaches to the right session rather than starting a new one.
+        if (Plugin.Condition[ConditionFlag.BoundByDuty])
+            StartSessionIfNeeded(Plugin.ClientState.TerritoryType);
     }
 
     public void Dispose()
