@@ -25,9 +25,19 @@ under a configurable threshold are dropped so the list stays clean.
   into a live stream's video description through the YouTube Data API, automatically after each
   pull or on clear. No manual copy-paste needed.
 
+## Installation
+
+1. In-game, open **ESC → Dalamud Settings → Experimental → Custom Plugin Repositories** and add:
+   ```
+   https://aemiliusxiv.github.io/DalamudPlugins/pluginmaster.json
+   ```
+2. Open the Plugin Installer (`/xlplugins`) and search for **ChronoLog**.
+
+ChronoLog is part of the [AemiliusXIV plugin repository](https://github.com/AemiliusXIV/DalamudPlugins) — visit that page for an overview of all available plugins.
+
 ## Setup
 
-1. Install, then open settings with `/clog cfg`. `/clog` opens the session window.
+1. Once installed, open settings with `/clog cfg`. `/clog` opens the session window.
 2. For OBS: see [docs/obs-setup.md](docs/obs-setup.md) for a step-by-step walkthrough.
 3. For YouTube: this needs your own Google Cloud OAuth client. See
    [docs/youtube-setup.md](docs/youtube-setup.md). Read the warning below first.
@@ -52,8 +62,15 @@ Everything the plugin reads (boss HP, casts, deaths) stays local. The only outbo
 to OBS on localhost and, if you turn it on, the YouTube Data API using credentials you supply.
 No telemetry, no third-party servers.
 
-## Not affiliated with Square Enix
+## License
 
-FINAL FANTASY XIV is a registered trademark of Square Enix Holdings Co., Ltd.
-This is an unofficial, fan-made tool with no affiliation to or endorsement by Square Enix. It is
-a third-party add-on for the Dalamud plugin framework; use it at your own discretion.
+Copyright (c) 2026 AemiliusXIV. All rights reserved.
+
+This project is source-available. You may fork and modify it, but the source code may not be
+copied into other projects or plugins without explicit written permission. Forks must preserve
+this license and credit the original author. See the [LICENSE](LICENSE) file for full terms.
+
+Square Enix does not permit the use of third-party plugins and this plugin may violate the
+Final Fantasy XIV Terms of Service. Use of this plugin is entirely at your own risk and is not
+sanctioned by Square Enix Co., Ltd. FINAL FANTASY XIV is a registered trademark of
+Square Enix Holdings Co., Ltd.

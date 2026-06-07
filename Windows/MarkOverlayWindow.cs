@@ -1,5 +1,4 @@
-// Copyright (C) 2026 AemiliusXIV -- https://github.com/AemiliusXIV/ChronoLog
-// SPDX-License-Identifier: GPL-3.0-or-later
+﻿// Copyright (C) 2026 AemiliusXIV -- https://github.com/AemiliusXIV/ChronoLog
 
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
@@ -85,7 +84,7 @@ public sealed class MarkOverlayWindow : Window
         var isMarked = target.IsMarked;
 
         // Fixed-width label so the button doesn't jump when toggling.
-        var label = isMarked ? "★ Unmark" : "★ Mark  ";
+        var label = isMarked ? "â˜… Unmark" : "â˜… Mark  ";
 
         if (isMarked)
         {

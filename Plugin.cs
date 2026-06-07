@@ -1,5 +1,4 @@
 ﻿// Copyright (C) 2026 AemiliusXIV -- https://github.com/AemiliusXIV/ChronoLog
-// SPDX-License-Identifier: GPL-3.0-or-later
 
 using System;
 using Dalamud.Game.Command;
