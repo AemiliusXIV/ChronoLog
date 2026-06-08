@@ -1,28 +1,28 @@
-{
-  "Author": "AemiliusXIV",
-  "Name": "ChronoLog",
-  "InternalName": "ChronoLog",
-  "Punchline": "OBS chapter markers and YouTube timestamps for every raid pull. Use /chrono.",
-  "Description": "Tracks pulls, wipes and clears in any duty. Per pull: fight name, phase, boss HP%, first death, duration.\n\nOutputs OBS chapter markers via websocket and a paste-ready YouTube description block. A direct API push to a live stream's description is planned for a later release.\n\nShort resets are filtered out automatically. /chrono to open, /chrono cfg for settings.",
-  "ApplicableVersion": "any",
-  "Tags": [
-    "raid",
-    "obs",
-    "youtube",
-    "streaming",
-    "recording",
-    "timestamps",
-    "chapters"
-  ],
-  "CategoryTags": [
-    "Utility"
-  ],
-  "RepoUrl": "https://github.com/AemiliusXIV/ChronoLog",
-  "DalamudApiLevel": 15,
-  "LoadRequiredState": 0,
-  "LoadSync": false,
-  "CanUnloadAsync": true,
-  "LoadPriority": 0,
-  "AcceptsFeedback": true,
-  "Changelog": "Primary command renamed to /chrono (/clog conflicted with the in-game crafting log). Short wipes under 15 s now appear as dimmed 'Brief attempt' rows - excluded from the text export but counted so pull numbering stays in sync with FFLogs. OBS no longer attempts reconnect when OBS itself exits cleanly. Fixed a rare case where a session could split into two separate entries after a plugin reload mid-raid."
+﻿{
+    "Author":  "AemiliusXIV",
+    "Name":  "ChronoLog",
+    "InternalName":  "ChronoLog",
+    "Punchline":  "OBS chapter markers and YouTube timestamps for every raid pull. Use /chrono.",
+    "Description":  "Tracks pulls, wipes and clears in any duty. Per pull: fight name, phase, boss HP%, first death, duration.\n\nOutputs OBS chapter markers via websocket and a paste-ready YouTube description block. A direct API push to a live stream\u0027s description is planned for a later release.\n\nShort resets are filtered out automatically. /chrono to open, /chrono cfg for settings.",
+    "ApplicableVersion":  "any",
+    "Tags":  [
+                 "raid",
+                 "obs",
+                 "youtube",
+                 "streaming",
+                 "recording",
+                 "timestamps",
+                 "chapters"
+             ],
+    "CategoryTags":  [
+                         "Utility"
+                     ],
+    "RepoUrl":  "https://github.com/AemiliusXIV/ChronoLog",
+    "DalamudApiLevel":  15,
+    "LoadRequiredState":  0,
+    "LoadSync":  false,
+    "CanUnloadAsync":  true,
+    "LoadPriority":  0,
+    "AcceptsFeedback":  true,
+    "Changelog":  "Enrages now show as \u0027enrage\u0027 in the pull list and text export rather than \u0027wipe\u0027. Detection is HP-based: boss scripted to 0 HP with a very low last real reading. Updated Square Enix disclaimer to include explicit non-affiliation language in both the README and LICENSE."
 }

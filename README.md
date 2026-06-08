@@ -70,7 +70,7 @@ This project is source-available. You may fork and modify it, but the source cod
 copied into other projects or plugins without explicit written permission. Forks must preserve
 this license and credit the original author. See the [LICENSE](LICENSE) file for full terms.
 
-Square Enix does not permit the use of third-party plugins and this plugin may violate the
-Final Fantasy XIV Terms of Service. Use of this plugin is entirely at your own risk and is not
-sanctioned by Square Enix Co., Ltd. FINAL FANTASY XIV is a registered trademark of
-Square Enix Holdings Co., Ltd.
+This project is not affiliated with or endorsed by Square Enix Co., Ltd. Square Enix does not
+permit the use of third-party plugins and this plugin may violate the Final Fantasy XIV Terms of
+Service. Use of this plugin is entirely at your own risk. FINAL FANTASY XIV is a registered
+trademark of Square Enix Holdings Co., Ltd.

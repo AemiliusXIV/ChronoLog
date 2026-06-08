@@ -243,9 +243,19 @@ public sealed class DutyTracker : IDisposable
             pull.LowestHpFraction = lowest;
         }
 
+        // Boss HP scripted to 0 with a very low last real reading: enrage sequence.
+        // Mid-pull phase transitions that briefly zero HP leave LastNonZeroHpFraction
+        // at a higher value once the boss returns, so this only fires at true enrages.
+        if (pull.Outcome == PullOutcome.Wipe
+            && boss.LowestHpFraction == 0f
+            && boss.LastNonZeroHpFraction <= 0.05f)
+        {
+            pull.Outcome = PullOutcome.Enrage;
+        }
+
         session.LastActiveUtc = DateTime.UtcNow;
 
-        var discard = outcome == PullOutcome.Wipe
+        var discard = pull.Outcome == PullOutcome.Wipe  // enrages are never discarded
                       && config.DiscardShortPulls
                       && pull.Duration < TimeSpan.FromSeconds(config.ShortPullThresholdSeconds);
 
