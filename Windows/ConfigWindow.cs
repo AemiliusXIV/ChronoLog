@@ -17,10 +17,8 @@ public sealed class ConfigWindow : Window, IDisposable
     private static readonly Vector4 HeaderColor = new(0.65f, 0.88f, 1f, 0.95f);
     private static readonly Vector4 WarnColor = new(1f, 0.75f, 0.35f, 1f);
 
-#if DEBUG
     private const string YtConfirmPopup = "Connect to YouTube?##rts_yt_confirm";
     private const string YtMissingPopup = "Credentials needed##rts_yt_missing";
-#endif
 
     public ConfigWindow(Plugin plugin) : base("ChronoLog Settings##cl_cfg")
     {
@@ -50,9 +48,7 @@ public sealed class ConfigWindow : Window, IDisposable
         DrawTextExport();
         DrawObs();
         DrawMark();
-#if DEBUG
         DrawYouTube();
-#endif
     }
 
     private void DrawCapture()
@@ -503,7 +499,6 @@ public sealed class ConfigWindow : Window, IDisposable
         }
     }
 
-#if DEBUG
     private void DrawYouTube()
     {
         DrawSectionHeader("YouTube (optional)");
@@ -561,11 +556,18 @@ public sealed class ConfigWindow : Window, IDisposable
             if (ImGui.Button("Disconnect##yt"))
                 plugin.YouTube.Disconnect();
         }
+        else if (plugin.YouTube.IsBusy)
+        {
+            ImGui.TextDisabled("Authorising (check your browser)...");
+            ImGui.SameLine();
+            if (ImGui.Button("Cancel##yt"))
+                plugin.YouTube.CancelConnect();
+        }
         else
         {
-            ImGui.TextDisabled(plugin.YouTube.IsBusy ? "Authorising (check your browser)..." : "Not authorised");
+            ImGui.TextDisabled("Not authorised");
             ImGui.SameLine();
-            if (ImGui.Button("Connect##yt") && !plugin.YouTube.IsBusy)
+            if (ImGui.Button("Connect##yt"))
             {
                 if (string.IsNullOrWhiteSpace(Config.YouTubeClientId) || string.IsNullOrWhiteSpace(Config.YouTubeClientSecret))
                     ImGui.OpenPopup(YtMissingPopup);
@@ -621,7 +623,6 @@ public sealed class ConfigWindow : Window, IDisposable
 
         ImGui.EndPopup();
     }
-#endif
 
     private static void DrawSectionHeader(string title)
     {

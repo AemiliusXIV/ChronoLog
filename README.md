@@ -21,9 +21,10 @@ under a configurable threshold are dropped so the list stays clean.
 - **Text block.** A YouTube-ready list of timestamps, copied to the clipboard or written to a
   file. The first line is always 0:00 so YouTube reads the chapters. The line format is a
   template you control.
-- **YouTube push (coming soon).** Planned for a future release: write the chapter block directly
-  into a live stream's video description through the YouTube Data API, automatically after each
-  pull or on clear. No manual copy-paste needed.
+- **YouTube push.** Writes the chapter block directly into a live stream's video description
+  through the YouTube Data API, automatically after each pull, on clear, or on demand. No
+  copy-paste. Requires your own Google Cloud OAuth client; the
+  [YouTube setup guide](docs/youtube-setup.md) walks through it.
 
 ## Installation
 
@@ -38,9 +39,10 @@ ChronoLog is part of the [AemiliusXIV plugin repository](https://github.com/Aemi
 ## Setup
 
 1. Once installed, open settings with `/chrono cfg`. `/chrono` opens the session window.
-2. For OBS: see [docs/obs-setup.md](docs/obs-setup.md) for a step-by-step walkthrough.
-3. For YouTube: this needs your own Google Cloud OAuth client. See
-   [docs/youtube-setup.md](docs/youtube-setup.md). Read the warning below first.
+2. For OBS: the [OBS setup guide](docs/obs-setup.md) covers it step by step.
+3. For YouTube: this needs your own Google Cloud OAuth client. The
+   [YouTube setup guide](docs/youtube-setup.md) covers the one-time Google Cloud steps. Read the
+   warning below first.
 
 ## YouTube access and your account
 

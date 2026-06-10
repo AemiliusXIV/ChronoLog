@@ -100,6 +100,11 @@ public sealed class DutyTracker : IDisposable
 
     public void Tick()
     {
+        // If we're in combat but no pull was started (e.g. DutyWiped fired before DutyStarted
+        // in certain Unreal/Extreme fights), start one now so the pull isn't silently lost.
+        if (session != null && session.Current == null && Plugin.Condition[ConditionFlag.InCombat])
+            BeginPull();
+
         if (session?.Current == null)
             return;
 

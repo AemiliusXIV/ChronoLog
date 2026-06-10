@@ -14,8 +14,7 @@ you found and how to reproduce it. I'll respond as soon as I can.
 
 ## YouTube OAuth: the risk, stated plainly
 
-The YouTube push is not in the current release yet; it is still in testing. When it ships it
-will be opt-in and carries a real trade you should understand.
+The YouTube push is opt-in. Before enabling it, understand the trade:
 
 - **Scope is coarse.** YouTube has no description-only permission. The scope this plugin
   requests (`youtube`) grants broad management of your channel, including editing and deleting

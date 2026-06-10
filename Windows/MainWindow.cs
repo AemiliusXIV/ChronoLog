@@ -114,7 +114,6 @@ public sealed class MainWindow : Window, IDisposable
                 status = $"Write failed: {ex.Message}";
             }
         }
-#if DEBUG
         ImGui.SameLine();
         if (ImGui.Button("Push to YouTube"))
         {
@@ -126,7 +125,6 @@ public sealed class MainWindow : Window, IDisposable
                 status = "Pushing to YouTube...";
             }
         }
-#endif
 
         if (!string.IsNullOrEmpty(status))
             ImGui.TextDisabled(status);

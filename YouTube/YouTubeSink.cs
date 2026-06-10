@@ -1,6 +1,5 @@
 ﻿// Copyright (C) 2026 AemiliusXIV -- https://github.com/AemiliusXIV/ChronoLog
 
-#if DEBUG
 using System;
 using System.IO;
 using System.Linq;
@@ -30,10 +29,13 @@ public sealed class YouTubeSink : IDisposable
     private readonly Configuration config;
 
     private YouTubeService? service;
+    private CancellationTokenSource? connectCts;
 
     public bool IsConnected => service != null;
     public bool IsBusy { get; private set; }
     public string? LastError { get; private set; }
+
+    public bool HasStoredToken => Directory.Exists(TokenDir) && Directory.GetFiles(TokenDir).Length > 0;
 
     public YouTubeSink(Configuration config)
     {
@@ -42,11 +44,14 @@ public sealed class YouTubeSink : IDisposable
 
     private string TokenDir => Path.Combine(Plugin.PluginInterface.GetPluginConfigDirectory(), "youtube-token");
 
+    public void CancelConnect() => connectCts?.Cancel();
+
     public async Task ConnectAsync()
     {
         if (IsBusy) return;
         IsBusy = true;
         LastError = null;
+        connectCts = new CancellationTokenSource();
         try
         {
             if (string.IsNullOrWhiteSpace(config.YouTubeClientId) || string.IsNullOrWhiteSpace(config.YouTubeClientSecret))
@@ -65,7 +70,7 @@ public sealed class YouTubeSink : IDisposable
                 secrets,
                 new[] { YouTubeService.Scope.Youtube },
                 "user",
-                CancellationToken.None,
+                connectCts.Token,
                 new FileDataStore(TokenDir, true));
 
             service = new YouTubeService(new BaseClientService.Initializer
@@ -73,6 +78,10 @@ public sealed class YouTubeSink : IDisposable
                 HttpClientInitializer = credential,
                 ApplicationName = "ChronoLog",
             });
+        }
+        catch (OperationCanceledException)
+        {
+            // User cancelled - nothing to report
         }
         catch (Exception ex)
         {
@@ -82,6 +91,8 @@ public sealed class YouTubeSink : IDisposable
         finally
         {
             IsBusy = false;
+            connectCts?.Dispose();
+            connectCts = null;
         }
     }
 
@@ -153,8 +164,9 @@ public sealed class YouTubeSink : IDisposable
         if (service == null)
             return null;
 
+        // mine=true and broadcastStatus are mutually exclusive in the current API.
+        // broadcastStatus alone scopes to the authenticated user's broadcasts.
         var req = service.LiveBroadcasts.List("id");
-        req.Mine = true;
         req.BroadcastStatus = LiveBroadcastsResource.ListRequest.BroadcastStatusEnum.Active;
         var resp = await req.ExecuteAsync();
         return resp.Items?.FirstOrDefault()?.Id;
@@ -177,8 +189,10 @@ public sealed class YouTubeSink : IDisposable
 
     public void Dispose()
     {
+        connectCts?.Cancel();
+        connectCts?.Dispose();
+        connectCts = null;
         service?.Dispose();
         service = null;
     }
 }
-#endif

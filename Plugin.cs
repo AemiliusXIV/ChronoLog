@@ -14,9 +14,7 @@ using ChronoLog.Obs;
 using ChronoLog.Output;
 using ChronoLog.Phases;
 using ChronoLog.Windows;
-#if DEBUG
 using ChronoLog.YouTube;
-#endif
 
 namespace ChronoLog;
 
@@ -61,9 +59,7 @@ public sealed class Plugin : IDalamudPlugin
     internal ObsWebSocketClient Obs { get; }
     internal ObsChapterSink ChapterSink { get; }
     internal MarkOverlayWindow MarkOverlay { get; }
-#if DEBUG
     internal YouTubeSink YouTube { get; }
-#endif
     internal SessionStore Store { get; }
     internal DutyTracker DutyTracker { get; }
 
@@ -81,16 +77,14 @@ public sealed class Plugin : IDalamudPlugin
         CombatCapture.Enable();
         Obs = new ObsWebSocketClient();
 
-#if DEBUG
         YouTube = new YouTubeSink(Config);
-#endif
+        if (Config.YouTubeEnabled && YouTube.HasStoredToken)
+            _ = YouTube.ConnectAsync();
         Store = new SessionStore();
 
         DutyTracker = new DutyTracker(Config, BossReader, Phases, Store, Obs.GetOffset, CombatCapture.GetCause);
         DutyTracker.PullStarted += _ => CombatCapture.Clear();
-#if DEBUG
         DutyTracker.PullCommitted += OnPullCommitted;
-#endif
         DutyTracker.Cleared += OnCleared;
         CombatCapture.ActionObserved += DutyTracker.NoteBossAction;
 
@@ -142,9 +136,7 @@ public sealed class Plugin : IDalamudPlugin
         DutyTracker.Dispose();
         CombatCapture.Dispose();
         Obs.Dispose();
-#if DEBUG
         YouTube.Dispose();
-#endif
     }
 
     private void OnFrameworkUpdate(IFramework framework)
@@ -165,7 +157,6 @@ public sealed class Plugin : IDalamudPlugin
         HandleObsStreamRestart();
     }
 
-#if DEBUG
     private void OnPullCommitted(PullEntry pull)
     {
         if (Config.YouTubeEnabled && Config.YouTubeFlush == YouTubeFlushTrigger.EveryPull)
@@ -175,7 +166,6 @@ public sealed class Plugin : IDalamudPlugin
                 _ = YouTube.FlushAsync(live);
         }
     }
-#endif
 
     /// <summary>
     /// Marks (or unmarks) the active pull, or the most recent committed pull if none is active.
@@ -345,13 +335,10 @@ public sealed class Plugin : IDalamudPlugin
             }
         }
 
-#if DEBUG
         if (Config.YouTubeEnabled && Config.YouTubeFlush == YouTubeFlushTrigger.OnClear)
             _ = YouTube.FlushAsync(session);
-#endif
     }
 
-#if DEBUG
     /// <summary>Manual YouTube push of the active (or last) session, used by the UI button.</summary>
     internal void FlushYouTubeNow()
     {
@@ -359,7 +346,6 @@ public sealed class Plugin : IDalamudPlugin
         if (session != null)
             _ = YouTube.FlushAsync(session);
     }
-#endif
 
     /// <summary>Resolved export folder: the configured one, or Documents\ChronoLog.</summary>
     internal string ExportDirectory()

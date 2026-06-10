@@ -14,6 +14,16 @@
         "resolved": "1.2.39",
         "contentHash": "fcFN01tDTIQqDuTwr1jUQK/geofiwjG5DycJQOnC72i1SsLAk1ELe+apBOuZ11UMQG8YKFZG1FgvjZPbqHyatg=="
       },
+      "Google.Apis.YouTube.v3": {
+        "type": "Direct",
+        "requested": "[1.74.0.4162, )",
+        "resolved": "1.74.0.4162",
+        "contentHash": "kkLd7PTLmBvKFVeIroK01vGTixbK4J9iqt+hu0GHX2MIFfoh+O+vjC0CNAyn2WwH10YRjA3swZfv4C5QFbNjXw==",
+        "dependencies": {
+          "Google.Apis": "1.74.0",
+          "Google.Apis.Auth": "1.74.0"
+        }
+      },
       "Newtonsoft.Json": {
         "type": "Direct",
         "requested": "[13.0.4, )",
@@ -37,6 +47,32 @@
         "resolved": "6.1.0",
         "contentHash": "M5cCC1ZMkZr9jbSQGTHnVkb5TDN67qWCV7AP8TAHdGkvDlu0puT5NzemESNn9+HkYIDpWpocP68/i+/ame2/2w=="
       },
+      "Google.Apis": {
+        "type": "Transitive",
+        "resolved": "1.74.0",
+        "contentHash": "Z6hSkmRD6V8/raSBqn/EsPpNop6suaLaGE9DbSY3yRE5G47l4zYqrJgapcLARk2Z3TsQUDmWz+w/tob3wuVt3g==",
+        "dependencies": {
+          "Google.Apis.Core": "1.74.0"
+        }
+      },
+      "Google.Apis.Auth": {
+        "type": "Transitive",
+        "resolved": "1.74.0",
+        "contentHash": "43H4foh3zfWgboK8QnJjIfPQuBiS794TxqQLDfeE3erQSluKmEN0qeDuwxLTpSr9Mtwj76S4LWxPneuSbC6fNg==",
+        "dependencies": {
+          "Google.Apis": "1.74.0",
+          "Google.Apis.Core": "1.74.0",
+          "System.Management": "7.0.2"
+        }
+      },
+      "Google.Apis.Core": {
+        "type": "Transitive",
+        "resolved": "1.74.0",
+        "contentHash": "gWOIiks6yo2TRliIyy10V18BJOO2BfUSPJFiTW6Tfap4tm3hFj7nvYU3XIfwzAxwoIy6nsBoqVDt9iBDSXrvYQ==",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.4"
+        }
+      },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "Transitive",
         "resolved": "9.0.4",
@@ -54,6 +90,19 @@
         "type": "Transitive",
         "resolved": "3.0.0",
         "contentHash": "irv0HuqoH8Ig5i2fO+8dmDNdFdsrO+DoQcedwIlb810qpZHBNQHZLW7C/AHBQDgLLpw2T96vmMAy/aE4Yj55Sg=="
+      },
+      "System.CodeDom": {
+        "type": "Transitive",
+        "resolved": "7.0.0",
+        "contentHash": "GLltyqEsE5/3IE+zYRP5sNa1l44qKl9v+bfdMcwg+M9qnQf47wK3H0SUR/T+3N4JEQXF3vV4CSuuo0rsg+nq2A=="
+      },
+      "System.Management": {
+        "type": "Transitive",
+        "resolved": "7.0.2",
+        "contentHash": "/qEUN91mP/MUQmJnM5y5BdT7ZoPuVrtxnFlbJ8a3kBJGhe2wCzBfnPFtK2wTtEEcf3DMGR9J00GZZfg6HRI6yA==",
+        "dependencies": {
+          "System.CodeDom": "7.0.0"
+        }
       },
       "Websocket.Client": {
         "type": "Transitive",
