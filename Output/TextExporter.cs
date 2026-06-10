@@ -35,6 +35,18 @@ public static class TextExporter
             .Replace("{cause}", "Akh Morn")
             .Replace("{death}", "Tank");
 
+    /// <summary>
+    /// Renders a template against the most recent committed pull in a session.
+    /// Falls back to fixed sample values when the session has no committed pulls.
+    /// </summary>
+    public static string RenderPreview(RaidSession session, string template, int offsetSeconds)
+    {
+        var pull = session.Pulls.LastOrDefault(p => !p.Discarded);
+        if (pull == null) return RenderSample(template);
+        var first = session.Pulls.First(p => !p.Discarded);
+        return RenderLine(pull, first, template, offsetSeconds);
+    }
+
     public static string Build(
         RaidSession session,
         string template,

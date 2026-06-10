@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Dalamud.NET.Sdk/15.0.0">
 
   <PropertyGroup>
-    <Version>0.2.1.0</Version>
+    <Version>0.2.2.0</Version>
     <Description>Detects raid pulls, wipes and clears and turns each into a timestamp: drops OBS chapter markers and builds a paste-ready YouTube-description block. Direct push to a live stream's description is planned for a later release.</Description>
     <PackageProjectUrl>https://github.com/AemiliusXIV/ChronoLog</PackageProjectUrl>
     <Nullable>enable</Nullable>

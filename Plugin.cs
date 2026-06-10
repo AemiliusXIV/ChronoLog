@@ -44,9 +44,14 @@ public sealed class Plugin : IDalamudPlugin
     internal WindowSystem WindowSystem { get; } = new("ChronoLog");
 
     // OBS auto-reconnect state (all accessed on framework thread only, no locks needed).
-    private DateTime? obsReconnectAt;     // when to fire the reconnect attempt
-    private DateTime? obsReconnectCheckAt; // deadline: if still not connected by here, give up
-    private bool obsReconnectPending;      // true between scheduling and firing the attempt
+    private DateTime? obsReconnectAt;       // when to fire the reconnect attempt
+    private DateTime? obsReconnectCheckAt;  // deadline: if still not connected by here, give up
+    private bool obsReconnectPending;       // true between scheduling and firing the attempt
+    // Reconnects that start within this window of plugin load are silent: the disconnect is
+    // almost certainly the old plugin instance's WebSocket closing during a reload/update,
+    // not a real mid-session OBS failure.
+    private readonly DateTime pluginLoadedAt = DateTime.UtcNow;
+    private bool obsStartupSilentReconnect; // whether the current reconnect cycle should print nothing
     internal ConfigWindow ConfigWindow { get; }
     internal MainWindow MainWindow { get; }
 
@@ -258,7 +263,12 @@ public sealed class Plugin : IDalamudPlugin
         {
             obsReconnectAt = now.AddSeconds(5);
             obsReconnectPending = true;
-            ChatGui.Print("[ChronoLog] OBS connection lost. Reconnecting in 5 seconds...");
+            // Disconnects within ~15 s of startup are almost always the previous plugin
+            // instance's WebSocket closing during a reload or update - not a real mid-session
+            // failure. Reconnect silently so the user doesn't see spurious noise.
+            obsStartupSilentReconnect = (now - pluginLoadedAt).TotalSeconds < 15;
+            if (!obsStartupSilentReconnect)
+                ChatGui.Print("[ChronoLog] OBS connection lost. Reconnecting in 5 seconds...");
         }
 
         // Fire the scheduled reconnect attempt.
@@ -281,10 +291,14 @@ public sealed class Plugin : IDalamudPlugin
             obsReconnectCheckAt = null;
             obsReconnectPending = false;
             Obs.ConsumePendingDisconnect(); // discard any noise from the failed attempt
-            if (Obs.IsConnected)
-                ChatGui.Print("[ChronoLog] OBS reconnected.");
-            else
-                ChatGui.Print("[ChronoLog] OBS reconnect failed. Reconnect manually in /chrono cfg.");
+            if (!obsStartupSilentReconnect)
+            {
+                if (Obs.IsConnected)
+                    ChatGui.Print("[ChronoLog] OBS reconnected.");
+                else
+                    ChatGui.Print("[ChronoLog] OBS reconnect failed. Reconnect manually in /chrono cfg.");
+            }
+            obsStartupSilentReconnect = false;
         }
 
         // Reconnect succeeded before the check deadline.
@@ -292,7 +306,9 @@ public sealed class Plugin : IDalamudPlugin
         {
             obsReconnectCheckAt = null;
             obsReconnectPending = false;
-            ChatGui.Print("[ChronoLog] OBS reconnected.");
+            if (!obsStartupSilentReconnect)
+                ChatGui.Print("[ChronoLog] OBS reconnected.");
+            obsStartupSilentReconnect = false;
         }
     }
 
