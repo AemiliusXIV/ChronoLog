@@ -64,13 +64,8 @@ No telemetry, no third-party servers.
 
 ## License
 
-Copyright (c) 2026 AemiliusXIV. All rights reserved.
+Copyright (c) 2026 AemiliusXIV
 
-This project is source-available. You may fork and modify it, but the source code may not be
-copied into other projects or plugins without explicit written permission. Forks must preserve
-this license and credit the original author. See the [LICENSE](LICENSE) file for full terms.
+This project is source-available. You may fork and modify it, but the source code may not be copied into other projects or plugins, in source or compiled form, without explicit written permission. Forks must preserve this license and credit the original author. See the [LICENSE](LICENSE) file for full terms.
 
-This project is not affiliated with or endorsed by Square Enix Co., Ltd. Square Enix does not
-permit the use of third-party plugins and this plugin may violate the Final Fantasy XIV Terms of
-Service. Use of this plugin is entirely at your own risk. FINAL FANTASY XIV is a registered
-trademark of Square Enix Holdings Co., Ltd.
+This project is not affiliated with or endorsed by Square Enix Co., Ltd. The use of third-party tools is prohibited under the FINAL FANTASY XIV Terms of Service; use of this plugin is entirely at your own risk. FINAL FANTASY XIV is a registered trademark of Square Enix Holdings Co., Ltd.
