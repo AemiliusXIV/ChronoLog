@@ -19,10 +19,10 @@ public sealed class MainWindow : Window, IDisposable
     private string status = string.Empty;
     private Guid selectedId = Guid.Empty;
 
-    // Track how many pulls were included in the last clipboard copy for this session.
-    // The "Copy new pulls" button appears once new pulls have arrived since that snapshot.
-    private Guid lastCopySessionId = Guid.Empty;
-    private int lastCopyPullCount = 0;
+    // Per-session pull count at the time of the last clipboard copy.
+    // "Copy new" appears once new pulls arrive after that snapshot, tracked independently
+    // per session so switching sessions doesn't invalidate the other session's state.
+    private readonly Dictionary<Guid, int> lastCopyPullCounts = new();
 
     public MainWindow(Plugin plugin) : base("ChronoLog##cl_main")
     {
@@ -70,16 +70,18 @@ public sealed class MainWindow : Window, IDisposable
         {
             var block = TextExporter.Build(session, Config.TemplateFormat, Config.EffectiveTimestampOffset(), Config.PhaseTimestampsEnabled, Config.PhaseTimestampOffsetSeconds);
             ImGui.SetClipboardText(block);
-            lastCopySessionId = session.Id;
-            lastCopyPullCount = session.Pulls.Count;
+            lastCopyPullCounts[session.Id] = session.Pulls.Count;
             status = "Copied to clipboard.";
         }
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip("Copy all pulls from this session.");
 
-        // New committed (non-brief) pulls since the last copy.
-        var newPulls = session.Id == lastCopySessionId
-            ? session.Pulls.Skip(lastCopyPullCount).Where(p => !p.Discarded).ToList()
+        // New committed (non-brief) pulls since the last copy for this session.
+        // Only show "Copy new" once the user has done an initial copy - otherwise there's
+        // no "0:00 Stream start" header in their description yet and a partial paste breaks YouTube chapters.
+        lastCopyPullCounts.TryGetValue(session.Id, out var lastCount);
+        var newPulls = lastCopyPullCounts.ContainsKey(session.Id)
+            ? session.Pulls.Skip(lastCount).Where(p => !p.Discarded).ToList()
             : new List<PullEntry>();
         if (newPulls.Count > 0)
         {
@@ -89,9 +91,9 @@ public sealed class MainWindow : Window, IDisposable
                 : $"Copy new (pulls {newPulls[0].Attempt}-{newPulls[^1].Attempt})";
             if (ImGui.Button(rangeLabel))
             {
-                var block = TextExporter.Build(session, Config.TemplateFormat, Config.EffectiveTimestampOffset(), Config.PhaseTimestampsEnabled, Config.PhaseTimestampOffsetSeconds, startIndex: lastCopyPullCount);
+                var block = TextExporter.Build(session, Config.TemplateFormat, Config.EffectiveTimestampOffset(), Config.PhaseTimestampsEnabled, Config.PhaseTimestampOffsetSeconds, startIndex: lastCount);
                 ImGui.SetClipboardText(block);
-                lastCopyPullCount = session.Pulls.Count;
+                lastCopyPullCounts[session.Id] = session.Pulls.Count;
                 status = $"Copied {newPulls.Count} new pull(s).";
             }
             if (ImGui.IsItemHovered())

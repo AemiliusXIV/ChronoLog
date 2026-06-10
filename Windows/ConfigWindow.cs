@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2026 AemiliusXIV -- https://github.com/AemiliusXIV/ChronoLog
 
 using System;
+using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
@@ -102,6 +103,15 @@ public sealed class ConfigWindow : Window, IDisposable
         }
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip("When re-entering the same duty within 12 hours, continue the existing pull list\nrather than starting fresh. Covers both plugin reloads and full game restarts.");
+
+        var confirmReset = Config.ConfirmSessionReset;
+        if (ImGui.Checkbox("Ask before clearing a session", ref confirmReset))
+        {
+            Config.ConfirmSessionReset = confirmReset;
+            Config.Save();
+        }
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip("Shows a confirmation prompt when you click 'Reset session'.\nCan also be toggled from within the prompt itself.");
     }
 
     private static readonly (string Label, string Template)[] Presets =
@@ -139,7 +149,11 @@ public sealed class ConfigWindow : Window, IDisposable
         if (Config.TemplateUseCustom)
             DrawCustomBuilder();
 
-        ImGui.TextWrapped($"Preview: {TextExporter.RenderSample(Config.TemplateFormat)}");
+        var prevSession = plugin.ActiveSession;
+        var previewText = (prevSession != null && prevSession.Pulls.Any(p => !p.Discarded))
+            ? TextExporter.RenderPreview(prevSession, Config.TemplateFormat, Config.EffectiveTimestampOffset())
+            : TextExporter.RenderSample(Config.TemplateFormat);
+        ImGui.TextWrapped($"Preview: {previewText}");
 
         var compensate = Config.AutoCompensateEncodingLag;
         if (ImGui.Checkbox("Compensate for encoding lag", ref compensate))
@@ -193,18 +207,22 @@ public sealed class ConfigWindow : Window, IDisposable
                 "Does not affect OBS embedded chapter markers.");
 
         ImGui.Spacing();
+        var hasActiveSession = plugin.DutyTracker.Session != null;
+        if (hasActiveSession) ImGui.BeginDisabled();
         var phaseEnabled = Config.PhaseTimestampsEnabled;
         if (ImGui.Checkbox("Expand phases as separate timestamps", ref phaseEnabled))
         {
             Config.PhaseTimestampsEnabled = phaseEnabled;
             Config.Save();
         }
-        if (ImGui.IsItemHovered())
-            ImGui.SetTooltip(
-                "When on, pulls that reach multiple phases each get one chapter line per phase.\n" +
-                "A pull that stays in P1 is left as a single line.\n\n" +
-                "Only fights with an authored phase table produce phase data\n" +
-                "(all Ultimates, M4S, M8S, M12S, Dancing Mad).");
+        if (hasActiveSession) ImGui.EndDisabled();
+        if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
+            ImGui.SetTooltip(hasActiveSession
+                ? "Can't change mid-session. Takes effect at the next session start."
+                : "When on, pulls that reach multiple phases each get one chapter line per phase.\n" +
+                  "A pull that stays in P1 is left as a single line.\n\n" +
+                  "Only fights with an authored phase table produce phase data\n" +
+                  "(all Ultimates, M4S, M8S, M12S, Dancing Mad).");
 
         if (Config.PhaseTimestampsEnabled)
         {
@@ -213,16 +231,15 @@ public sealed class ConfigWindow : Window, IDisposable
             ImGui.SetNextItemWidth(100);
             if (ImGui.InputInt("Phase offset (s)", ref phaseOffset))
             {
-                Config.PhaseTimestampOffsetSeconds = Math.Clamp(phaseOffset, -30, 0);
+                Config.PhaseTimestampOffsetSeconds = Math.Clamp(phaseOffset, -30, 10);
                 Config.Save();
             }
             if (ImGui.IsItemHovered())
                 ImGui.SetTooltip(
-                    "Shifts each phase chapter back by this many seconds.\n" +
-                    "Phase transitions fire when the transition ability resolves\n" +
-                    "(end of the cast bar). -3 to -4 seconds typically lands near\n" +
-                    "the start of that cast, just as the previous phase is ending.\n" +
-                    "0 = exact moment of detection.");
+                    "Shifts each phase chapter by this many seconds. Negative values pull\n" +
+                    "the link back before the transition; -3 to -4 typically lands at the\n" +
+                    "start of the transition cast. Positive values push it into the new phase.\n" +
+                    "0 = exact moment the ability resolved.");
             ImGui.Unindent();
         }
 
@@ -446,6 +463,11 @@ public sealed class ConfigWindow : Window, IDisposable
             Config.ObsChapterHotkeyFallback = hotkey;
             Config.Save();
         }
+        if (ImGui.IsItemHovered())
+            ImGui.SetTooltip(
+                "Name of an OBS hotkey to trigger as a fallback when the native chapter\n" +
+                "marker API is unavailable. Must match exactly the name shown in\n" +
+                "OBS Settings > Hotkeys. Leave blank to disable.");
     }
 
     private void DrawMark()

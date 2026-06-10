@@ -201,7 +201,7 @@ public sealed class ObsWebSocketClient : IDisposable
         }
         catch (Exception ex)
         {
-            Plugin.Log.Debug(ex, "GetStreamStatus failed");
+            Plugin.Log.Warning(ex, "GetStreamStatus failed");
             return null;
         }
     }
@@ -220,7 +220,7 @@ public sealed class ObsWebSocketClient : IDisposable
         }
         catch (Exception ex)
         {
-            Plugin.Log.Debug(ex, "GetRecordStatus failed");
+            Plugin.Log.Warning(ex, "GetRecordStatus failed");
             return null;
         }
     }
