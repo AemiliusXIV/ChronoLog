@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.74.0.4162" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.75.0.4205" />
     <PackageReference Include="obs-websocket-dotnet" Version="5.0.1" />
 
     <!-- Dalamud already ships these in its runtime. Compile against the versions
