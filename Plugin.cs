@@ -210,6 +210,10 @@ public sealed class Plugin : IDalamudPlugin
             target.MarkOffset = null;
             target.MarkUtc = null;
         }
+
+        // Persist right away: a mark on an already-committed pull has no later
+        // resolve step that would save it.
+        Store.Save();
     }
 
     // Runs every framework tick. Polls OBS output state and reacts to stream restarts.

@@ -132,7 +132,7 @@ public sealed class DutyTracker : IDisposable
             DetectFirstDeath();
     }
 
-    // â”€â”€ Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     private void OnDutyStarted(IDutyStateEventArgs args)
     {
@@ -305,7 +305,7 @@ public sealed class DutyTracker : IDisposable
         SessionEnded?.Invoke(ended);
     }
 
-    // â”€â”€ Death detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Death detection ───────────────────────────────────────────────────────
 
     private void DetectFirstDeath()
     {

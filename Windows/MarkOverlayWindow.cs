@@ -84,7 +84,7 @@ public sealed class MarkOverlayWindow : Window
         var isMarked = target.IsMarked;
 
         // Fixed-width label so the button doesn't jump when toggling.
-        var label = isMarked ? "â˜… Unmark" : "â˜… Mark  ";
+        var label = isMarked ? "★ Unmark" : "★ Mark  ";
 
         if (isMarked)
         {

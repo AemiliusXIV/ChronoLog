@@ -20,7 +20,7 @@ public sealed class FightPhases
 /// names. Detection runs off the ActionEffect hook so instant transitions are caught.
 ///
 /// Coverage target: all Ultimates plus multi-phase Savage. Ability ids need live
-/// verification on first run per fight â€” the hook fires on the right event but some
+/// verification on first run per fight: the hook fires on the right event but some
 /// trigger types (StartsUsing vs Ability) may differ from what cactbot uses.
 /// </summary>
 public static class PhaseTables
@@ -73,7 +73,7 @@ public static class PhaseTables
             {
                 [18494] = "Cruise Chaser & Brute Justice", // 0x483E Judgment Nisi
                 [18543] = "Alexander Prime",               // 0x486F Inception Formation
-                [18555] = "Perfect Alexander",             // 0x487B Fate Projection Î±
+                [18555] = "Perfect Alexander",             // 0x487B Fate Projection α
             },
         },
 
@@ -113,7 +113,7 @@ public static class PhaseTables
         // Futures Rewritten (Ultimate) - territory 1238
         // Flat five-phase view; P2/P3 sub-sections not tracked.
         // Note: 0x9D36 (Materialization, P4) has a lower id than 0x9D49 (Hell's Judgment, P3)
-        // but fires later in the scripted sequence â€” lookup order does not matter here.
+        // but fires later in the scripted sequence, so lookup order does not matter here.
         [1238] = new FightPhases
         {
             Phase1Name = "Fatebreaker",
@@ -139,12 +139,12 @@ public static class PhaseTables
             },
         },
 
-        // â”€â”€ Multi-phase Savage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // ── Multi-phase Savage ─────────────────────────────────────────────────────
 
         // AAC Light-heavyweight M4S (Wicked Thunder) - territory 1232
         // Cross Tail Switch intermission is not tracked; phase advances directly to the
         // first Sabbath mechanic so the label is useful the moment P2 content begins.
-        // Ion Cluster (0x9622) fires slightly before Sunrise Sabbath starts â€” cactbot
+        // Ion Cluster (0x9622) fires slightly before Sunrise Sabbath starts; cactbot
         // uses it as the trigger because the debuffs pre-date the Sabbath cast bar.
         [1232] = new FightPhases
         {
@@ -172,7 +172,7 @@ public static class PhaseTables
         // AAC Heavyweight M4S (Lindwurm) - territory 1327
         // Two P1 sub-phases tracked; 0xB4D8 Replication (first cast) marks the P2 gate.
         // Note: 0xBEC0 (Curtain Call) has a higher id than 0xB4C6 (Slaughtershed) but
-        // fires first in the scripted sequence â€” lookup order is independent of id magnitude.
+        // fires first in the scripted sequence, so lookup order is independent of id magnitude.
         [1327] = new FightPhases
         {
             Phase1Name = "Lindwurm",

@@ -69,7 +69,7 @@ public sealed class PullEntry
 
     /// <summary>
     /// OBS stream duration (preferred) or recording duration captured at pull start.
-    /// This is an absolute VOD timestamp â€” no normalization applied.
+    /// This is an absolute VOD timestamp, no normalization applied.
     /// Null if OBS was not connected or neither output was active.
     /// </summary>
     public TimeSpan? RecordOffsetAtStart { get; set; }

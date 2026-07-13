@@ -1,0 +1,7 @@
+root = true
+
+# Save every file as UTF-8 so box-drawing separators, the mark star and any
+# other non-ASCII characters don't get mangled into mojibake by an editor that
+# defaults to a legacy code page.
+[*]
+charset = utf-8

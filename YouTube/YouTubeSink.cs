@@ -32,7 +32,12 @@ public sealed class YouTubeSink : IDisposable
     private CancellationTokenSource? connectCts;
 
     public bool IsConnected => service != null;
-    public bool IsBusy { get; private set; }
+
+    // Claimed via Interlocked: FlushAsync is called fire-and-forget from several
+    // places, so a plain check-then-set could let two flushes run at once.
+    private int busy;
+    public bool IsBusy => Volatile.Read(ref busy) == 1;
+
     public string? LastError { get; private set; }
 
     public bool HasStoredToken => Directory.Exists(TokenDir) && Directory.GetFiles(TokenDir).Length > 0;
@@ -48,8 +53,7 @@ public sealed class YouTubeSink : IDisposable
 
     public async Task ConnectAsync()
     {
-        if (IsBusy) return;
-        IsBusy = true;
+        if (Interlocked.CompareExchange(ref busy, 1, 0) != 0) return;
         LastError = null;
         connectCts = new CancellationTokenSource();
         try
@@ -90,7 +94,7 @@ public sealed class YouTubeSink : IDisposable
         }
         finally
         {
-            IsBusy = false;
+            Interlocked.Exchange(ref busy, 0);
             connectCts?.Dispose();
             connectCts = null;
         }
@@ -113,10 +117,11 @@ public sealed class YouTubeSink : IDisposable
 
     public async Task<bool> FlushAsync(RaidSession session)
     {
-        if (service == null || session.Pulls.Count == 0 || IsBusy)
+        if (service == null || session.Pulls.Count == 0)
+            return false;
+        if (Interlocked.CompareExchange(ref busy, 1, 0) != 0)
             return false;
 
-        IsBusy = true;
         LastError = null;
         try
         {
@@ -152,7 +157,7 @@ public sealed class YouTubeSink : IDisposable
         }
         finally
         {
-            IsBusy = false;
+            Interlocked.Exchange(ref busy, 0);
         }
     }
 

@@ -53,7 +53,7 @@ public class Configuration : IPluginConfiguration
 
     public bool Enabled { get; set; } = true;
 
-    // â”€â”€ Capture â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Capture ──────────────────────────────────────────────────────────────
     public PhaseLabelStyle PhaseLabelStyle { get; set; } = PhaseLabelStyle.NumberColonName;
 
     public bool DiscardShortPulls { get; set; } = true;
@@ -66,7 +66,7 @@ public class Configuration : IPluginConfiguration
     /// </summary>
     public int ShortPullThresholdSeconds { get; set; } = 15;
 
-    // â”€â”€ Text export â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Text export ──────────────────────────────────────────────────────────
     /// <summary>
     /// Effective line template. Set from a preset, or generated from <see cref="CustomTokenOrder"/>
     /// when <see cref="TemplateUseCustom"/> is true. Tokens: {time} {pull} {fight} {phase} {hp}
@@ -109,13 +109,13 @@ public class Configuration : IPluginConfiguration
     /// <summary>Ordered token names for the custom builder (without braces).</summary>
     public List<string> CustomTokenOrder { get; set; } = new() { "time", "pull", "outcome", "hp", "phase", "duration" };
 
-    /// <summary>Folder the description block is written to. Empty = plugin config dir.</summary>
+    /// <summary>Folder the description block is written to. Empty = Documents\ChronoLog.</summary>
     public string TextExportDirectory { get; set; } = string.Empty;
 
     /// <summary>Write the description block to file automatically when the duty clears.</summary>
     public bool AutoExportOnClear { get; set; } = true;
 
-    // â”€â”€ Phase timestamps â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Phase timestamps ─────────────────────────────────────────────────────
     /// <summary>
     /// When enabled, pulls that reach multiple phases each expand to one chapter line per
     /// phase in the text export. Pulls staying in P1 are unaffected. Only fights with an
@@ -130,7 +130,7 @@ public class Configuration : IPluginConfiguration
     /// </summary>
     public int PhaseTimestampOffsetSeconds { get; set; } = -3;
 
-    // â”€â”€ OBS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── OBS ──────────────────────────────────────────────────────────────────
     public bool ObsEnabled { get; set; } = false;
     public string ObsHost { get; set; } = "127.0.0.1";
     public int ObsPort { get; set; } = 4455;
@@ -152,7 +152,7 @@ public class Configuration : IPluginConfiguration
     /// </summary>
     public StreamRestartBehavior StreamRestartBehavior { get; set; } = StreamRestartBehavior.NotifyOnly;
 
-    // â”€â”€ Session management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Session management ───────────────────────────────────────────────────
     /// <summary>Show a confirmation dialog before clearing a session's pull list.</summary>
     public bool ConfirmSessionReset { get; set; } = true;
 
@@ -162,7 +162,7 @@ public class Configuration : IPluginConfiguration
     /// </summary>
     public bool ResumeSessionAcrossRestarts { get; set; } = true;
 
-    // â”€â”€ Mark overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Mark overlay ───────────────────────────────────────────────────────
     /// <summary>Show the floating mark button when inside an instanced duty.</summary>
     public bool ShowMarkOverlay { get; set; } = false;
 
@@ -172,7 +172,7 @@ public class Configuration : IPluginConfiguration
     /// </summary>
     public bool MarkUsePressTime { get; set; } = false;
 
-    // â”€â”€ YouTube (opt-in) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── YouTube (opt-in) ─────────────────────────────────────────────────────
     public bool YouTubeEnabled { get; set; } = false;
 
     /// <summary>OAuth client id from the user's own Google Cloud project.</summary>

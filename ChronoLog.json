@@ -24,5 +24,5 @@
     "CanUnloadAsync":  true,
     "LoadPriority":  0,
     "AcceptsFeedback":  true,
-    "Changelog":  "The big one: ChronoLog can now push timestamps straight to YouTube. Connect your own Google account once and the plugin writes each pull into your live stream's description as you go, or all at once when the duty ends. No more pasting by hand. The first connection needs a quick Google Cloud setup; the setup guide in the repo covers every step.\n\nAlso fixed: the first pull of a fight could go unrecorded when the wipe landed before the pull registered. ChronoLog now starts the pull the moment combat begins, so nothing slips through."
+    "Changelog":  "Two small fixes. The floating mark button now draws its star icon properly instead of garbled characters. And a mark placed on a pull that has already finished now survives a reload, where before it could quietly disappear."
 }

@@ -13,7 +13,7 @@ namespace ChronoLog.Output;
 /// absolute OBS stream/recording offsets captured at each pull start, so they point to
 /// the correct position in the full stream VOD without any manual calculation.
 ///
-/// YouTube chapters need a 0:00 entry to activate â€” that should be in your stream's
+/// YouTube chapters need a 0:00 entry to activate; that should be in your stream's
 /// existing description (e.g. "0:00 Stream start"). The raid block is appended after.
 ///
 /// When OBS is not connected the times fall back to wall-clock offsets relative to the
@@ -144,7 +144,7 @@ public static class TextExporter
     {
         TimeSpan t;
         if (pull.RecordOffsetAtStart.HasValue)
-            // Absolute stream/recording position â€” apply offset to shift the chapter link.
+            // Absolute stream/recording position: apply offset to shift the chapter link.
             t = pull.RecordOffsetAtStart.Value + TimeSpan.FromSeconds(offsetSeconds);
         else
             // No OBS data: wall-clock relative to first pull. Offset still applies.
