@@ -15,7 +15,7 @@
 
     <!-- Dalamud already ships these in its runtime. Compile against the versions
          it loads, but don't pack our own copies, or the loader hits a duplicate. -->
-    <PackageReference Include="System.Reactive" Version="6.1.0" ExcludeAssets="runtime" />
+    <PackageReference Include="System.Reactive" Version="7.0.0" ExcludeAssets="runtime" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" ExcludeAssets="runtime" />
   </ItemGroup>
 
